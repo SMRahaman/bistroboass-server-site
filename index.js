@@ -30,6 +30,25 @@ async function run() {
     const bistro_Boss_Review = client
       .db("bistro_boss_DB")
       .collection("reviews");
+    const bistro_Boss_Cart = client.db("bistro_boss_DB").collection("cart");
+
+    //Cart section
+
+    app.post("/api/cart", async (req, res) => {
+      const item = req.body;
+      console.log(item);
+      const result = await bistro_Boss_Cart.insertOne(item);
+      res.send(result);
+    });
+
+    app.get("/api/cart", async (req, res) => {
+      const result = await bistro_Boss_Cart.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/api/cart", async (req, res) => {
+      const query = {};
+    });
 
     app.get("/api/menus", async (req, res) => {
       const result = await bistro_BoSS_DB.find().toArray();
