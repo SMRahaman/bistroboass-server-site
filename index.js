@@ -41,13 +41,21 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/api/cart", async (req, res) => {
-      const result = await bistro_Boss_Cart.find().toArray();
-      res.send(result);
-    });
+    // app.get("/api/cart", async (req, res) => {
+    //   const query = {};
+    //   if (req.query?.userId) {
+    //     query = { userId: req.query?.userId };
+    //   }
+    //   const result = await bistro_Boss_Cart.find(query).toArray();
+    //   res.send(result);
+    // });
 
     app.get("/api/cart", async (req, res) => {
-      const query = {};
+      const uid = req.query.userId;
+      console.log(uid);
+      const query = { userId: uid };
+      const result = await bistro_Boss_Cart.find(query).toArray();
+      res.send(result);
     });
 
     app.get("/api/menus", async (req, res) => {
