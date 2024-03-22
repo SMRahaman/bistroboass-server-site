@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("Bistro Boss server running");
 });
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.9cgyp9n.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -36,25 +36,43 @@ async function run() {
 
     app.post("/api/cart", async (req, res) => {
       const item = req.body;
-      console.log(item);
       const result = await bistro_Boss_Cart.insertOne(item);
       res.send(result);
     });
 
     // app.get("/api/cart", async (req, res) => {
-    //   const query = {};
-    //   if (req.query?.userId) {
-    //     query = { userId: req.query?.userId };
-    //   }
-    //   const result = await bistro_Boss_Cart.find(query).toArray();
+    //   const result = await bistro_Boss_Cart.find().toArray();
     //   res.send(result);
     // });
 
     app.get("/api/cart", async (req, res) => {
       const uid = req.query.userId;
-      console.log(uid);
       const query = { userId: uid };
       const result = await bistro_Boss_Cart.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get("/api/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bistro_Boss_Cart.findOne(query);
+      res.send(result);
+    });
+
+    app.put("/api/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const updateProduct = req.body;
+      console.log(updateProduct);
+      const option = { upsert: true };
+      const product = {
+        $set: {
+          totalPrice: updateProduct.totalPrice,
+          itemQuantity: updateProduct.itemQuantity,
+        },
+      };
+      const result = await bistro_Boss_Cart.updateOne(filter, option, product);
       res.send(result);
     });
 
