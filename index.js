@@ -65,14 +65,27 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const updateProduct = req.body;
       console.log(updateProduct);
-      const option = { upsert: true };
       const product = {
         $set: {
           totalPrice: updateProduct.totalPrice,
           itemQuantity: updateProduct.itemQuantity,
         },
       };
-      const result = await bistro_Boss_Cart.updateOne(filter, option, product);
+      const result = await bistro_Boss_Cart.updateOne(filter, product);
+      res.send(result);
+    });
+
+    app.delete("/api/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await bistro_Boss_Cart.deleteOne(filter);
+      res.send(result);
+    });
+
+    app.delete("/api/cart", async (req, res) => {
+      const uid = req.query.userId;
+      const query = { userId: uid };
+      const result = await bistro_Boss_Cart.deleteMany(query);
       res.send(result);
     });
 
